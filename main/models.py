@@ -7,6 +7,11 @@ class Player(AbstractUser):
         verbose_name = 'Player'
         verbose_name_plural = 'Players'
 
+    # Player information
+    avatar = models.ImageField(upload_to='players/avatar', blank=True, null=True)
+    bio = models.TextField(max_length=150, blank=True, null=True)
+    location = models.CharField(max_length=200, blank=True, null=True)
+
 
     # Basic attributes
 

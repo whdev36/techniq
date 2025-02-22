@@ -1,7 +1,57 @@
 {% extends "base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Bosh sahifa{% endblock %}
+
+{% load static %}
 
 {% block content %}
-    <h1>Home</h1>
+<div class="row">
+    {% if user.is_authenticated %}
+    <div class="col-md-8 offset-md-2 bg-light p-5 border shadow rounded">
+        <div class="d-flex align-items-center gap-5">
+            <!-- User Avatar -->
+            {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle border"
+                style="width: 150px; height: 150px;">
+            {% else %}
+            <img src="{% static 'default-profile-pic.png' %}" alt="{{ user.username }}"
+                class="img-fluid rounded-circle border" style="width: 150px; height: 150px;">
+            {% endif %}
+
+            <!-- User Details -->
+            <div>
+                <h1 class="">{{ user.first_name }} {{ user.last_name }}</h1>
+                <p class="mb-0"><span class="text-warning"><i class="bi bi-star-fill"></i></span> {{ user.xp }} XP</p>
+                <p class="mb-0 text-muted">{{ user.bio|default:"Bio mavjud emas." }}</p>
+                <p class="mb-0">
+                    <span class="text-primary"><i class="bi bi-geo-alt-fill"></i></span>
+                    {{ user.location|default:"Manzil mavjud emas." }} · Lvl {{ user.level }}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Login Form for Unauthenticated Users -->
+    <div class="col-md-6 offset-md-3 bg-light p-5 border shadow rounded">
+        <h1 class="text-center mb-5 display-3">Kirish</h1>
+        <form method="post" class="">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <label for="username">Foydalanuvchi nomi *</label>
+                <input class="form-control" type="text" name="username" id="username"
+                    placeholder="Foydalanuvchi nomingizni kiriting" required>
+                <small class="text-muted">Faqat harflar, raqamlar va pastki chiziq ishlatilishi mumkin.</small>
+            </div>
+            <div class="form-group mb-5">
+                <label for="password">Parol *</label>
+                <input class="form-control" type="password" name="password" id="password"
+                    placeholder="Parolingizni kiriting" required>
+                <small class="text-muted">Kamida bitta katta harf, bitta raqam va bitta maxsus belgi ishlatish tavsiya
+                    etiladi.</small>
+            </div>
+            <button type="submit" class="btn w-100 btn-success">Kirish</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
