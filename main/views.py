@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import PlayerCreationForm
-from .models import Player
+from .models import Player, Course, Lesson
 
 def home(request):
     if request.method == 'POST':
@@ -43,3 +43,15 @@ def register_user(request):
     else:
         form = PlayerCreationForm()
     return render(request, 'main/register.html', {'form': form})
+
+def course_list(request):
+    courses = Course.objects.all()
+    return render(request, 'courses/course_list.html', {'courses': courses})
+
+def course_detail(request, id):
+    c = get_object_or_404(Course, id=id)
+    return render(request, 'courses/course_detail.html', {'course': c})
+
+def lesson_detail(request, id):
+    lesson = get_object_or_404(Lesson, id=id)
+    return render(request, "courses/lesson_detail.html", {"lesson": lesson})
