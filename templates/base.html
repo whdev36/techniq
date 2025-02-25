@@ -30,11 +30,11 @@
         <!-- messages -->
         {% for message in messages %}
         <div class="alert alert-{% if message.tags != 'error' %}{{ message.tags }}{% else %}danger{% endif %} alert-dismissible fade show" role="alert">
-            <strong style="letter-spacing: 1px; font-weight: 600;">
-                {% if message.tags == 'success' %}Ajoyib:
-                {% elif message.tags == 'error' %}Xatolik:
-                {% elif message.tags == 'info' %}Ma'lumot:
-                {% elif message.tags == 'warning' %}Ogohlantirish:
+            <strong>
+                {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill"></i>
+                {% elif message.tags == 'error' %}<i class="bi bi-exclamation-square-fill"></i>
+                {% elif message.tags == 'info' %}<i class="bi bi-info-circle-fill"></i>
+                {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill"></i>
                 {% endif %}
             </strong> {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

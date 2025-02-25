@@ -12,19 +12,21 @@ class PlayerCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Dynamically update field attributes
         for field, attr in field_attrs.items():
             if field in self.fields:
                 self.fields[field].widget.attrs.update({
                     'class': 'form-control',
-                    'placeholder': attr['placeholder'],
+                    'placeholder': attr.get('placeholder', ''),
                     'required': True,
                 })
-                self.fields[field].label = attr['label']
+                self.fields[field].label = attr.get('label', '')
                 self.fields[field].label_suffix = ' *'
-                self.fields[field].help_text = attr['help_text']
-                self.fields[field].error_messages = attr['error_messages']
+                self.fields[field].help_text = attr.get('help_text', '')
+                self.fields[field].error_messages = attr.get('error_messages', '')
 
     def as_div(self):
+        '''Render the form fields as Bootstrap-styled <div> elements.'''
         return mark_safe(
             '\n'.join(
                 f'<div class="form-group mb-3">'

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 
 class Player(AbstractUser):
     '''Player model that extends the Django AbstractUser.'''
@@ -12,76 +13,56 @@ class Player(AbstractUser):
     bio = models.TextField(max_length=150, blank=True, null=True)
     location = models.CharField(max_length=200, blank=True, null=True)
 
-
     # Basic attributes
-
     level = models.PositiveIntegerField(default=0)  # Player level
 
-
     # Stats
-
-    xp = models.IntegerField(default=0)  # experience point
-    hp = models.IntegerField(default=100)  # health point
-    mp = models.IntegerField(default=50)  # mana point
-
+    xp = models.IntegerField(default=0)  # Experience points
+    hp = models.IntegerField(default=100)  # Health points
+    mp = models.IntegerField(default=50)  # Mana points
 
     # Additional stats
+    gold = models.PositiveIntegerField(default=0)  # In-game currency
+    energy = models.PositiveIntegerField(default=100)  # Action energy
+    achievements = models.JSONField(default=dict, blank=True)  # Store achievements
 
-    gold = models.PositiveIntegerField(default=0)  # in-game  currency
-    energy = models.PositiveIntegerField(default=100)  # action energy
-    achievements = models.JSONField(default=dict, blank=True)  # store achievements
+    def clean(self):
+        '''Validate fields to ensure they are within acceptable ranges.'''
+        if self.hp < 0:
+            raise ValidationError({'hp': 'HP cannot be negative.'})
+        if self.mp < 0:
+            raise ValidationError({'mp': 'MP cannot be negative.'})
+        if self.gold < 0:
+            raise ValidationError({'gold': 'Gold cannot be negative.'})
+        if self.energy < 0:
+            raise ValidationError({'energy': 'Energy cannot be negative.'})
 
     def gain_xp(self, amount):
         '''Increase XP and level up if threshold is reached.'''
-        pass
+        if amount < 0:
+            raise ValueError('XP amount must be positive.')
+        self.xp += amount
+        # Example leveling logic: Level up every 100 XP
+        while self.xp >= 100:
+            self.level += 1
+            self.xp -= 100
+            self.hp = 100  # Reset HP on level up
+            self.mp = 50   # Reset MP on level up
+        self.save()
 
     def take_damage(self, amount):
         '''Reduce HP when the player takes damage.'''
-        pass
+        if amount < 0:
+            raise ValueError('Damage amount must be positive.')
+        self.hp = max(self.hp - amount, 0)  # Ensure HP does not go below 0
+        self.save()
 
     def use_mana(self, amount):
         '''Reduce MP when the player uses a skill or spell.'''
-        pass
+        if amount < 0:
+            raise ValueError('Mana amount must be positive.')
+        self.mp = max(self.mp - amount, 0)  # Ensure MP does not go below 0
+        self.save()
 
     def __str__(self):
         return f'{self.username} (Level {self.level})'
-    
-class Course(models.Model):
-
-    title = models.CharField(max_length=255)  # name of course
-    description = models.TextField()  # description of course
-    image = models.ImageField(upload_to='courses/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title
-    
-class Section(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sections')
-    title = models.CharField(max_length=255)  # title of section
-    order = models.PositiveIntegerField()  # order of section
-
-    def __str__(self):
-        return f'{self.course.title} - {self.title}'
-    
-class Lesson(models.Model):
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
-    title = models.CharField(max_length=255)  # title of lesson
-    content = models.TextField()  # content of lesson
-    order = models.PositiveIntegerField()  # order of lesson
-
-    def __str__(self):
-        return f'{self.section.course.title} - {self.section.title} - {self.title}'
-
-
-class Quiz(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='quizzes')
-    question = models.CharField(max_length=255)  # question
-    option_1 = models.CharField(max_length=255)
-    option_2 = models.CharField(max_length=255)
-    option_3 = models.CharField(max_length=255)
-    option_4 = models.CharField(max_length=255)
-    correct_answer = models.CharField(max_length=255)  # correct answer
-
-    def __str__(self):
-        return f'Quiz: {self.question}'
