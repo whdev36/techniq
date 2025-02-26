@@ -35,6 +35,38 @@
             </div>
         </div>
     </div>
+
+    <!-- Course Cards -->
+    <div class="col-md-8 offset-md-2 mt-5">
+        <h2 class="mb-4">Available Courses</h2>
+        <div class="row">
+            {% for course in courses %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if course.image %}
+                    <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.title }}">
+                    {% else %}
+                    <img src="{% static 'default-course-image.png' %}" class="card-img-top" alt="{{ course.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.description|truncatewords:20 }}</p>
+                        <a href="{% url 'course_detail' course.id %}" class="btn btn-primary">View Course</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Created on {{ course.created_at|date:"F j, Y" }}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col">
+                <p class="text-center">No courses available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- /Course Cards -->
+
     {% else %}
     <!-- Unauthenticated User View -->
     <div class="col-md-6 offset-md-3 bg-light p-5 border shadow rounded">
@@ -60,8 +92,8 @@
 
         <!-- Additional Links (e.g., Sign Up, Forgot Password) -->
         <div class="mt-3 text-center">
-            <p class="mb-1">Don't have an account? <a href="{% url 'register' %}">Login</a></p>
-            <p class="mb-0"><a href="">Forgot Password?</a></p>
+            <p class="mb-1">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+            <p class="mb-0"><a href="#">Forgot Password?</a></p>
         </div>
     </div>
     {% endif %}

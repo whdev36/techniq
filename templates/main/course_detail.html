@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Course Header -->
+    <div class="row">
+        <div class="col">
+            <h1>{{ course.title }}</h1>
+            <p class="lead">{{ course.description }}</p>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Course Image -->
+    {% if course.image %}
+    <div class="row mb-4">
+        <div class="col">
+            <img src="{{ course.image.url }}" class="img-fluid rounded" alt="{{ course.title }}">
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Sections and Lessons -->
+    <div class="row">
+        <div class="col">
+            {% for section in sections %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">{{ section.title }}</h2>
+                    <p class="card-text">{{ section.description|default:"No description available." }}</p>
+
+                    <!-- Lessons List -->
+                    <ul class="list-group list-group-flush">
+                        {% for lesson in section.lessons.all %}
+                        <li class="list-group-item">
+                            <a href="{% url 'lesson_detail' lesson.id %}" class="text-decoration-none">
+                                <i class="bi bi-book me-2"></i>{{ lesson.title }}
+                            </a>
+                            <small class="text-muted float-end">{{ lesson.duration }} mins</small>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">No lessons available in this section.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info">
+                No sections available for this course.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
