@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="row">
+    <form method="post" class="col-md-6 offset-md-3 bg-light p-5 rounded border shadow">
+        {% csrf_token %}
+        <h1 class="text-center mb-5">Login</h1>
+        <!-- Username Field -->
+        <div class="form-group mb-3">
+            <label for="username">Username *</label>
+            <input class="form-control" type="text" name="username" id="username" placeholder="Enter your username"
+                required autocomplete="off">
+            <small class="text-muted">Only letters, numbers, and underscores are allowed.</small>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group mb-5">
+            <label for="password">Password *</label>
+            <input class="form-control" type="password" name="password" id="password" placeholder="Enter your password"
+                required>
+            <small class="text-muted">Password must be at least 8 characters long.</small>
+        </div>
+        <button type="submit" class="btn w-100 btn-success">Login</button>
+    </form>
+</div>
+{% endblock %}
