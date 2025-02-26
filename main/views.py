@@ -1,10 +1,12 @@
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import PlayerCreationForm
+from django.contrib.auth.hashers import check_password
+from .models import Player
 
 def home(request):
     template = loader.get_template('main/home.html')
@@ -51,3 +53,18 @@ def register_user(request):
     else:
         form = PlayerCreationForm()  # Render an empty form for GET request
     return render(request, 'auth/register.html', {'form': form})
+
+@login_required
+def delete_account(request):
+    '''❌ User account deletion function'''
+    if request.method == 'POST':
+        player = get_object_or_404(Player, pk=request.user.pk)
+        password = request.POST.get('confirm-password')  # Use .get()
+        if not check_password(password, player.password):
+            messages.error(request, 'Incorrect password. Please try again.')
+            return redirect('delete-account')
+        player.delete()
+        logout(request)
+        messages.success(request, 'Your account has been successfully deleted.')
+        return redirect('home')
+    return render(request, 'auth/delete-account.html', {})

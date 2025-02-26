@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Account{% endblock %}
+
+{% block content %}
+<div class="row">
+    <form method="post" class="col-md-6 offset-md-3 bg-light p-5 rounded border shadow">
+        {% csrf_token %}
+        <h1 class="text-center mb-4 text-danger">Delete Account</h1>
+        <p class="text-center">Warning: This action is irreversible. Your account and all associated data will be permanently deleted.</p>
+        
+        <!-- Confirm Password Field -->
+        <div class="form-group mb-3">
+            <label for="confirm_password">Confirm Password *</label>
+            <input class="form-control" type="password" name="confirm-password" id="confirm_password" placeholder="Enter your password to confirm" required>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger">Delete Account</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

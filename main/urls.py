@@ -11,4 +11,7 @@ urlpatterns = [
 
     # 📝 Create a registration page
     path('register/', views.register_user, name='register'),
+
+    # 🛠️ User account deletion function
+    path('delete/account/', views.delete_account, name='delete-account'),
 ]
