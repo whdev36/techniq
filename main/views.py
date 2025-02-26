@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .forms import PlayerCreationForm
 
 def home(request):
     template = loader.get_template('main/home.html')
@@ -32,3 +33,21 @@ def logout_user(request):
     logout(request)
     messages.info(request, 'You have been logged out.')
     return redirect('home')
+
+def register_user(request):
+    '''📝 Function for registration page'''
+    if request.method == 'POST':
+        form = PlayerCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()    # Save the new user
+            login(request, user)  # Log the user in
+            messages.success(request, 'Registration successful! Welcome to the site.')
+            next_URL = request.GET.get('next', 'home')  # Redirect 'next' or 'home'
+            return redirect(next_URL)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+    else:
+        form = PlayerCreationForm()  # Render an empty form for GET request
+    return render(request, 'auth/register.html', {'form': form})

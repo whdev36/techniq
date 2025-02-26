@@ -8,4 +8,7 @@ urlpatterns = [
     # 🔑 Optimize login and logout processes
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
+
+    # 📝 Create a registration page
+    path('register/', views.register_user, name='register'),
 ]
