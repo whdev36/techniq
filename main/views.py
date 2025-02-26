@@ -1,4 +1,6 @@
 from django.http import HttpResponse
+from django.template import loader
 
 def home(request):
-    return HttpResponse('Hello World!')
+    template = loader.get_template('main/home.html')
+    return HttpResponse(template.render({'page': 'home'}, request))
